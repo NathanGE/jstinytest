@@ -12,10 +12,29 @@
 //   console.log(number);
 // });
 
-tests({
-  'It should run the callback function array.length times': function() {},
+function forEach(array, callback) {
+  for(var i = 0; i < array.length; i++) {
+    callback(array[i]);
+  }
+}
 
-  'It should pass in the nth element as the first argument to the callback': function() {}
+tests({
+  'It should run the callback function array.length times': function() {
+      var counter = 0;
+      forEach([1, 2, 3], function() {
+        counter++;
+      });
+
+      eq(counter, 3);
+  },
+  'It should pass in the nth element as the first argument to the callback': function() {
+    
+    forEach([1], function(number) {
+      console.log(number);
+
+      eq(number, 1);
+    });
+  }
 
 });
 </script>
