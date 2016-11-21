@@ -22,9 +22,14 @@
 //   console.log(number);
 // });
 
-function forEach(array, callback) {
+function forEach(array, callback, optinalThisObject) {
+  var forEachCallback = callback;
+
+  if(optinalThisObject) {
+    forEachCallback = callback.bind(optinalThisObject);
+  }
   for(var i = 0; i < array.length; i++) {
-    callback(array[i], i, array);
+    forEachCallback(array[i], i, array);
   }
 }
 
@@ -56,6 +61,11 @@ tests({
     forEach(testArray, function(number, index, originalArray) {
       eq(originalArray, testArray);
     });
+  },
+  'It should optionally accept a this object accessible in the callback': function () {
+    forEach([1], function() {
+      eq(this.description, 'Optional this object');
+    }, {description: 'Optional this object'});
   }
 
 });
