@@ -1,13 +1,12 @@
 <script src="../tinytest.js"></script>
-<script src="adder.js"></script>
 <script>
 
 
-function forEach(array, callback, optinalThisObject) {
+function forEach(array, callback, optionalThisObject) {
   var forEachCallback = callback;
 
-  if(optinalThisObject) {
-    forEachCallback = callback.bind(optinalThisObject);
+  if(optionalThisObject) {
+    forEachCallback = callback.bind(optionalThisObject);
   }
   for(var i = 0; i < array.length; i++) {
     forEachCallback(array[i], i, array);
