@@ -1,41 +1,6 @@
 <script src="../tinytest.js"></script>
 <script>
 
-// Example 1: Callback should run once for each element.
-// map([1, 2, 3], function() {});
-
-// Example 2: Callback has access to its nth element.
-// map([1, 2, 3], function(number) {
-//   console.log(number);
-// });
-
-// Example 3: Callback has access to index.
-// map([1, 2, 3], function(number, index) {
-//   console.log(index);
-// });
-
-// Example 4: Callback has access to originalArray.
-// map([1, 2, 3], function(number, index, originalArray) {
-//   console.log(originalArray);
-// });
-
-// Example 5: Optional this.
-// map([1, 2, 3], function() {
-//   console.log(this.name);
-// } {name: 'Gordon'});
-
-// Example 6: The originalArray is not the same as the mappedArray.
-// var originalArray = [1, 2, 3];
-// var mappedArray = map(testArray, function() {
-//   originalArray != mappedArray;
-// });
-
-// Example 7: Map returns a new array.
-// var originalArray = [1, 2, 3];
-// var mappedArray = map(testArray, function(element) {
-//   return element * 2;
-// });
-
 function map(array, callback, optionalThis) {
   var mapCallback = callback;
 
@@ -46,7 +11,10 @@ function map(array, callback, optionalThis) {
   var mappedArray = [];
 
   for(var i = 0; i < array.length; i++) {
-    mappedArray.push(mapCallback(array[i], i, array));
+    if(i in array) {
+      mappedArray[i] = mapCallback(array[i], i, array);
+    }
+    
   }
 
   return mappedArray;
@@ -102,6 +70,16 @@ tests({
     });
 
     eq(mappedArray[0], 4);
+  },
+  'It should skip unassigned index': function() {
+    var weirdArray = [, 1];
+
+    var mappedArray = map(weirdArray, function double(number) {
+      return number * 2;
+    });
+
+    eq(0 in mappedArray, false);
+    eq(mappedArray[1], 2);
   }
   
 });
