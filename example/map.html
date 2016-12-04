@@ -1,0 +1,108 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// Example 1: Callback should run once for each element.
+// map([1, 2, 3], function() {});
+
+// Example 2: Callback has access to its nth element.
+// map([1, 2, 3], function(number) {
+//   console.log(number);
+// });
+
+// Example 3: Callback has access to index.
+// map([1, 2, 3], function(number, index) {
+//   console.log(index);
+// });
+
+// Example 4: Callback has access to originalArray.
+// map([1, 2, 3], function(number, index, originalArray) {
+//   console.log(originalArray);
+// });
+
+// Example 5: Optional this.
+// map([1, 2, 3], function() {
+//   console.log(this.name);
+// } {name: 'Gordon'});
+
+// Example 6: The originalArray is not the same as the mappedArray.
+// var originalArray = [1, 2, 3];
+// var mappedArray = map(testArray, function() {
+//   originalArray != mappedArray;
+// });
+
+// Example 7: Map returns a new array.
+// var originalArray = [1, 2, 3];
+// var mappedArray = map(testArray, function(element) {
+//   return element * 2;
+// });
+
+function map(array, callback, optionalThis) {
+  var mapCallback = callback;
+
+  if(optionalThis) {
+    mapCallback = callback.bind(optionalThis);
+  }
+
+  var mappedArray = [];
+
+  for(var i = 0; i < array.length; i++) {
+    mappedArray.push(mapCallback(array[i], i, array));
+  }
+
+  return mappedArray;
+}
+
+tests({
+  'It should run the callback array.length times.': function() {
+    var counter = 0;
+
+    map([1, 2, 3], function() {
+      counter++;
+    });
+
+    eq(counter, 3);
+  },
+  'It should pass in the nth element as the first argument to the callback.': function() {
+    map([1], function(number) {
+      eq(number, 1);
+    });
+  },
+  'It should pass in the nth item index position as the second argument to the callback': function() {
+    map([1], function(number, index) {
+      eq(index, 0);
+    });
+  },
+  'It should pass in the array as the third argument to the callback': function() {
+    var testArray = [1, 2, 3]
+    map(testArray, function(number, index, originalArray) {
+      eq(originalArray, testArray);
+    });
+  },
+  'It should accept an optional this object': function() {
+    map([1], function() {
+      eq(this.description, 'Optional this object');
+    }, {description: 'Optional this object'});
+  },
+  'It should return an array': function() {
+    var testArray = [];
+    var mappedArray = map(testArray, function() {});
+
+    // verify that fileterArray is an array
+    eq(Array.isArray(mappedArray), true);
+  },
+  'It should return a new array, not the one passed in': function() {
+    var testArray = [];
+    var mappedArray = map(testArray, function() {});
+
+    eq(testArray !== mappedArray, true);
+  },
+  'It should return a mapped array': function() {
+    var mappedArray = map([1], function(number) {
+      return number * 4;
+    });
+
+    eq(mappedArray[0], 4);
+  }
+  
+});
+</script>
